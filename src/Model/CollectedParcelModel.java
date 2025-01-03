@@ -1,13 +1,11 @@
 package Model;
+
 import Model.Dtos.ParcelStatus;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
-public class ParcelModel implements CSVParsable<ParcelModel> {
+public class CollectedParcelModel implements CSVParsable<CollectedParcelModel> {
     private  int No;
     private String ParcelID;
     private int DaysInDepot;
@@ -17,9 +15,12 @@ public class ParcelModel implements CSVParsable<ParcelModel> {
     private LocalDate ReceivedDate;
     private LocalDate CollectedDate;
     private String CustomerSurname;
+    private double Discount;
+    private double TotalFee;
 
-    public ParcelModel(int no, String parcelID, int daysInDepot, double weight, String dimensions,
-                       ParcelStatus parcelStatus, LocalDate receivedDate, LocalDate collectedDate, String customerSurname)
+    public CollectedParcelModel(int no, String parcelID, int daysInDepot, double weight, String dimensions,
+                       ParcelStatus parcelStatus, LocalDate receivedDate, LocalDate collectedDate, String customerSurname,
+                       double discount, double totalFee)
     {
         this.No = no;
         this.ParcelID = parcelID;
@@ -30,9 +31,11 @@ public class ParcelModel implements CSVParsable<ParcelModel> {
         this.ReceivedDate = receivedDate;
         this.CollectedDate = collectedDate;
         this.CustomerSurname = customerSurname;
+        this.Discount = discount;
+        this.TotalFee = totalFee;
     }
 
-    public ParcelModel()
+    public CollectedParcelModel()
     {
 
     }
@@ -126,6 +129,24 @@ public class ParcelModel implements CSVParsable<ParcelModel> {
         this.CustomerSurname = customerSurname;
     }
 
+    public double getDiscount()
+    {
+        return Discount;
+    }
+
+    public void setDiscount(double discount)
+    {
+        this.Discount = discount;
+    }
+
+    public double getTotalFee() {
+        return TotalFee;
+    }
+
+    public void setTotalFee(double totalFee) {
+        this.TotalFee = totalFee;
+    }
+
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     @Override
@@ -138,17 +159,19 @@ public class ParcelModel implements CSVParsable<ParcelModel> {
                 "Dimensions=" + Dimensions + ',' +
                 "ParcelStatus=" + ParcelStatus + ',' +
                 "ReceivedDate=" + DATE_FORMAT.format(ReceivedDate)  + ',' +
-                "CollectedDate=" +  (CollectedDate != null ? DATE_FORMAT.format(CollectedDate) : "N/A") + ',' +
-                "CustomerSurname='" + CustomerSurname + ',' +
+                "CollectedDate=" +  DATE_FORMAT.format(CollectedDate) + ',' +
+                "CustomerSurname=" + CustomerSurname + ',' +
+                "Discount=" + Discount + ',' +
+                "TotalFee=" + TotalFee + ',' +
                 '}'));
     }
 
     @Override
-    public ParcelModel parseFromCSV(String[] values) {
+    public CollectedParcelModel parseFromCSV(String[] values) {
         LocalDate receivedDate = LocalDate.parse(values[6], DATE_FORMAT);
-        LocalDate collectedDate = "NULL".equals(values[7]) ? null : LocalDate.parse(values[7], DATE_FORMAT);
+        LocalDate collectedDate = LocalDate.parse(values[7], DATE_FORMAT);
 
-        return new ParcelModel(
+        return new CollectedParcelModel(
                 Integer.parseInt(values[0]),
                 values[1],
                 Integer.parseInt(values[2]),
@@ -157,19 +180,15 @@ public class ParcelModel implements CSVParsable<ParcelModel> {
                 ParcelStatus.valueOf(values[5]),
                 receivedDate,
                 collectedDate,
-                values[8]
+                values[8],
+                Double.parseDouble(values[9]),
+                Double.parseDouble(values[10])
         );
     }
 
     @Override
-    public Integer getId()
-    {
-        return  No;
-    }
-
-    @Override
     public String[] toCSVRow() {
-        return new String[]{
+        return new String[] {
                 String.valueOf(No),
                 ParcelID,
                 String.valueOf(DaysInDepot),
@@ -177,10 +196,15 @@ public class ParcelModel implements CSVParsable<ParcelModel> {
                 Dimensions,
                 ParcelStatus.name(),
                 DATE_FORMAT.format(ReceivedDate),
-                CollectedDate != null ? DATE_FORMAT.format(CollectedDate) : "NULL",
-                CustomerSurname
+                DATE_FORMAT.format(CollectedDate),
+                CustomerSurname,
+                String.valueOf(Discount),
+                String.valueOf(TotalFee)
         };
     }
+
+    @Override
+    public Integer getId() {
+        return No;
+    }
 }
-
-

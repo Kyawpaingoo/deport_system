@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.Collection;
+
 public class CustomerModel implements CSVParsable<CustomerModel> {
     private int QueueNumber;
     private String FirstName;
@@ -49,7 +51,7 @@ public class CustomerModel implements CSVParsable<CustomerModel> {
         this.SurName = surName;
     }
 
-    public String getParcelID()
+    public Collection<?> getParcelID()
     {
         return ParcelID;
     }

@@ -1,0 +1,11 @@
+ParcelID,Weight,Dimensions,DaysInDepot,ParcelStatus,CustomerSurname,Discount,TotalFee
+PKG1001,2.5,30x20x15,3,Collected,Smith,0.00,23.50
+PKG1003,4.2,40x30x25,5,Collected,Williams,0.00,41.00
+PKG1005,5.6,45x35x30,4,Collected,Jones,0.00,46.00
+PKG1007,3.8,38x28x22,6,Collected,Miller,0.00,41.00
+PKG1009,4.5,42x32x26,3,Collected,Moore,0.00,38.50
+PKG1011,3.3,36x26x20,4,Collected,Anderson,0.00,29.50
+PKG1013,4.8,44x34x28,5,Collected,Jackson,0.00,44.00
+PKG1015,3.6,37x27x21,3,Collected,Harris,0.00,29.00
+PKG1017,4.1,39x29x23,4,Collected,Thompson,0.00,38.50
+PKG1019,3.9,38x28x22,5,Collected,Martinez,0.00,39.50

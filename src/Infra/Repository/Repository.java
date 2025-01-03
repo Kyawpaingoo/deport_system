@@ -141,4 +141,9 @@ public class Repository<T extends CSVParsable<T>> implements IRepository<T> {
             throw new RuntimeException("Failed to update entity", e);
         }
     }
+
+//    @Override
+//    public Optional<T> where(Predicate<T> predicate) {
+//        return null;
+//    }
 }

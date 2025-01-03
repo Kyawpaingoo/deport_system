@@ -1,15 +1,13 @@
 package Services.ParcelService;
 
 import Infra.UnitOfWork.UnitOfWork;
+import Model.CollectedParcelModel;
 import Model.Dtos.ParcelStatus;
 import Model.ParcelModel;
 import Services.CustomerService.CustomerService;
 import Services.CustomerService.ICustomerService;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class ParcelService implements IParcelService {
     private final UnitOfWork _uow;;
@@ -39,9 +37,9 @@ public class ParcelService implements IParcelService {
     }
 
     @Override
-    public Map<Integer, ParcelModel> getCollectedParcel() {
-        Map<Integer, ParcelModel> resultMap = new HashMap<>();
-        resultMap = _uow._parcelRepository().whereAsMap(d -> d.getParcelStatus() == ParcelStatus.Collected);
+    public Map<Integer, CollectedParcelModel> getCollectedParcel() {
+        Map<Integer, CollectedParcelModel> resultMap = new HashMap<>();
+        resultMap = _uow._collectedParcelRepository().whereAsMap(d -> d.getParcelStatus() == ParcelStatus.Collected);
         return  resultMap;
     }
 
@@ -65,5 +63,43 @@ public class ParcelService implements IParcelService {
         Map<Integer, ParcelModel> resultMap = new HashMap<>();
         resultMap = _uow._parcelRepository().sortAsMap(d -> d.getCustomerSurname() != null);
         return  resultMap;
+    }
+
+    @Override
+    public Double calculateParcelFee(String dimensions, double weight, int days, double discount) {
+        double[] dimensionList = ConvertDimensionToDouble(dimensions);
+
+        double length = dimensionList[0];
+        double width = dimensionList[1];
+        double height = dimensionList[2];
+
+        double volumeRate = 0.01;
+        double weightRate = 0.05;
+        double dailyRate = 1.1;
+
+        double volume = length * width * height;
+
+        double baseFee = (volume * volumeRate) + (weight * weightRate);
+
+        double feeWithDays = baseFee * Math.pow(dailyRate, days);
+
+        double totalFee = feeWithDays - discount;
+
+        if (totalFee < 0) {
+            totalFee = 0;
+        }
+
+        return totalFee;
+    }
+
+    double[] ConvertDimensionToDouble(String dimensions)
+    {
+        String[] parts = dimensions.split("x");
+
+        double length = Double.parseDouble(parts[0]);
+        double width = Double.parseDouble(parts[1]);
+        double height = Double.parseDouble(parts[2]);
+
+        return new double[]{length, width, height};
     }
 }
