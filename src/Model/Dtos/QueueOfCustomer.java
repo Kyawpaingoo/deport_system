@@ -22,18 +22,5 @@ public class QueueOfCustomer {
     {
         this.CustomerList = customerList;
     }
-
-//    @Override
-//    public String toString() {
-//        StringBuilder sb = new StringBuilder("QueueOfCustomer{ CustomerList=[");
-//        for (CustomerModel customer : CustomerList) {
-//            sb.append(customer.toString()).append(", ");
-//        }
-//        if (!CustomerList.isEmpty()) {
-//            sb.setLength(sb.length() - 2);
-//        }
-//        sb.append("] }");
-//        return sb.toString();
-//    }
 }
 

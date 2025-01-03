@@ -1,14 +1,15 @@
 package Controller;
 
 import Model.CustomerModel;
+import Services.CustomerService.CustomerService;
 import Services.CustomerService.ICustomerService;
 
 public class CustomerController {
     private final ICustomerService _customerService;
 
-    public CustomerController(ICustomerService customerService)
+    public CustomerController()
     {
-        this._customerService = customerService;
+        this._customerService = new CustomerService();
     }
 
     public void getAll()

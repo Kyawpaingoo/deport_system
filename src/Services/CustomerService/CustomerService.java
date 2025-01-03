@@ -17,12 +17,11 @@ public class CustomerService implements ICustomerService{
     }
 
     @Override
-    public QueueOfCustomer getAll() {
-        QueueOfCustomer queueList = new QueueOfCustomer();
+    public List<CustomerModel> getAll() {
+
         List<CustomerModel> customerList = _uow._customerRepository().getList();
-        queueList.CustomerList.addAll(customerList);
        // System.out.println(queueList.CustomerList);
-        return queueList;
+        return customerList;
     }
 
     @Override

@@ -5,8 +5,7 @@ import Services.CustomerService.ICustomerService;
 
 public class Main {
     public static void main(String[] args) {
-        ICustomerService customerService = new CustomerService();
-        CustomerController customerController = new CustomerController(customerService);
+        CustomerController customerController = new CustomerController();
 
         customerController.getAll();
         customerController.getCurrentCustomer(4);

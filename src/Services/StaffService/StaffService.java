@@ -3,6 +3,7 @@ package Services.StaffService;
 import Infra.UnitOfWork.UnitOfWork;
 import Model.CustomerModel;
 import Model.Dtos.ParcelStatus;
+import Model.Dtos.QueueOfCustomer;
 import Model.ParcelModel;
 import Model.StaffModel;
 import Services.CustomerService.CustomerService;
@@ -10,19 +11,22 @@ import Services.CustomerService.ICustomerService;
 import Services.ParcelService.IParcelService;
 import Services.ParcelService.ParcelService;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class StaffService implements IStaffService{
 
     private final UnitOfWork _uow;
     private final IParcelService _iparcelService;
-    private  final ICustomerService _iCustomerService;
+    private final ICustomerService _iCustomerService;
+    private final  QueueOfCustomer queueList;
 
     public StaffService()
     {
         this._uow = new UnitOfWork();
         this._iparcelService = new ParcelService();
         this._iCustomerService = new CustomerService();
+        this.queueList = new QueueOfCustomer();
     }
 
     @Override
@@ -62,5 +66,17 @@ public class StaffService implements IStaffService{
     public CustomerModel processCustomer(int queueNumber) {
         Optional<CustomerModel> result = _iCustomerService.getByQueue(queueNumber);
         return result.orElse(null);
+    }
+
+    @Override
+    public QueueOfCustomer addCustomerToQueue(CustomerModel data) {
+        queueList.getCustomerList().add(data);
+        return  queueList;
+    }
+
+    @Override
+    public QueueOfCustomer removeCustomerFromQueue(int queueNumber) {
+        queueList.CustomerList.removeIf(d -> d.getQueueNumber() == queueNumber);
+        return queueList;
     }
 }

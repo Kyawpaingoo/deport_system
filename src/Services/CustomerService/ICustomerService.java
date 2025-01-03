@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ICustomerService {
-     QueueOfCustomer getAll();
+     List<CustomerModel> getAll();
      Optional<CustomerModel> getByQueue(int Id);
      String addCustomer(CustomerModel obj);
      String removeCustomer(int QueueNumber);
