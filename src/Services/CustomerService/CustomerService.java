@@ -41,6 +41,7 @@ public class CustomerService implements ICustomerService{
     @Override
     public String removeCustomer(int QueueNumber) {
         boolean result = _uow._customerRepository().delete(QueueNumber);
+        System.out.println(QueueNumber);
         return result ? "Success" : "Fail";
     }
 

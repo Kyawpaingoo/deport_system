@@ -6,7 +6,7 @@ import java.awt.event.*;
 
 public class AddCustomerForm extends JDialog {
     private JTextField firstNameField;
-    private JTextField lastNameField;
+    private JTextField surNameField;
     private JTextField ParcelIDField;
     private JButton addButton;
     private JButton cancelButton;
@@ -25,7 +25,7 @@ public class AddCustomerForm extends JDialog {
 
     private void initializeComponents() {
         firstNameField = new JTextField(20);
-        lastNameField = new JTextField(20);
+        surNameField = new JTextField(20);
         ParcelIDField = new JTextField(20);
         addButton = new JButton("Add");
         cancelButton = new JButton("Cancel");
@@ -33,7 +33,7 @@ public class AddCustomerForm extends JDialog {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!firstNameField.getText().isEmpty() && !lastNameField.getText().isEmpty() && !ParcelIDField.getText().isEmpty()) {
+                if (!firstNameField.getText().isEmpty() && !surNameField.getText().isEmpty() && !ParcelIDField.getText().isEmpty()) {
                     succeeded = true;
                     dispose();
                 } else {
@@ -68,10 +68,10 @@ public class AddCustomerForm extends JDialog {
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        contentPanel.add(new JLabel("Last Name:"), gbc);
+        contentPanel.add(new JLabel("SurName:"), gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
-        contentPanel.add(lastNameField, gbc);
+        contentPanel.add(surNameField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -97,8 +97,8 @@ public class AddCustomerForm extends JDialog {
         return firstNameField.getText();
     }
 
-    public String getLastName() {
-        return lastNameField.getText();
+    public String getSurName() {
+        return surNameField.getText();
     }
 
     public String getParcelID() {

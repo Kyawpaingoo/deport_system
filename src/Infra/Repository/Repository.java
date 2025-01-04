@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 public class Repository<T extends CSVParsable<T>> implements IRepository<T> {
     private final String filePath;
     private final T entity;
-    //private final List<T> entities = new ArrayList<>();
     private final boolean isMapBased;
 
     public Repository(String filePath, T entity,boolean isMapBased)
@@ -97,7 +96,6 @@ public class Repository<T extends CSVParsable<T>> implements IRepository<T> {
 
     @Override
     public Map<Integer, T> sortAsMap(Predicate<T> predicate) {
-        // Ensure getMap() is not null
         Map<Integer, T> sourceMap = getMap();
         if (sourceMap == null) {
             return Collections.emptyMap();
@@ -106,12 +104,12 @@ public class Repository<T extends CSVParsable<T>> implements IRepository<T> {
         return sourceMap.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue() != null && predicate.test(entry.getValue()))
-                .sorted()
+                .sorted(Map.Entry.comparingByKey())
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
-                        (oldValue, newValue) -> oldValue, // Resolving key conflicts
-                        LinkedHashMap::new // Maintain insertion order
+                        (oldValue, newValue) -> oldValue,
+                        LinkedHashMap::new
                 ));
     }
 
@@ -142,8 +140,4 @@ public class Repository<T extends CSVParsable<T>> implements IRepository<T> {
         }
     }
 
-//    @Override
-//    public Optional<T> where(Predicate<T> predicate) {
-//        return null;
-//    }
 }

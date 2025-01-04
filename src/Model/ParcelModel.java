@@ -126,7 +126,7 @@ public class ParcelModel implements CSVParsable<ParcelModel> {
         this.CustomerSurname = customerSurname;
     }
 
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
     public String toString() {

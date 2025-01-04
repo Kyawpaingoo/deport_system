@@ -1,7 +1,9 @@
 package Controller;
 
 import Model.CustomerModel;
+import Model.Dtos.LoginDto;
 import Model.Dtos.ParcelStatus;
+import Model.Dtos.UpdateStatusDto;
 import Model.ParcelModel;
 import Services.StaffService.IStaffService;
 import Services.StaffService.StaffService;
@@ -16,19 +18,19 @@ public class StaffController {
         this._iStaffService = new StaffService();
     }
 
-    public void login(String userName, String password)
+    public boolean login(LoginDto dto)
     {
-        _iStaffService.login(userName, password);
+        return _iStaffService.login(dto);
     }
 
-    public void logout(String userName, String password)
+    public void logout(LoginDto dto)
     {
-        _iStaffService.logout(userName, password);
+        _iStaffService.logout(dto);
     }
 
-    public void updateParcelStatus(String ParcelID, ParcelStatus parcelStatus, double discount, double totalFee)
+    public void updateParcelStatus(UpdateStatusDto dto)
     {
-        _iStaffService.updateParcelStatus(ParcelID, parcelStatus, discount,totalFee);
+        _iStaffService.updateParcelStatus(dto);
     }
 
     public void addParcel(ParcelModel obj)

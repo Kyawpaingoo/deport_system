@@ -1,15 +1,20 @@
 package View;
 
+import Model.Dtos.ParcelStatus;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class AddParcelForm extends JDialog {
     private JTextField ParcelIDField;
     private JTextField DaysInDeportField;
     private JTextField WeightField;
     private JTextField DimensionField;
-    private JTextField StatusField;
+    private JComboBox<ParcelStatus> StatusField;
     private JTextField ReceivedDateField;
     private JTextField CollectedField;
     private JTextField CustomerSurnameField;
@@ -33,7 +38,7 @@ public class AddParcelForm extends JDialog {
         DaysInDeportField = new JTextField(20);
         WeightField = new JTextField(20);
         DimensionField = new JTextField(20);
-        StatusField = new JTextField(20);
+        StatusField = new JComboBox<>(ParcelStatus.values());
         ReceivedDateField = new JTextField(20);
         CollectedField = new JTextField(20);
         CustomerSurnameField = new JTextField(20);
@@ -47,14 +52,13 @@ public class AddParcelForm extends JDialog {
                         !DaysInDeportField.getText().isEmpty() &&
                         !WeightField.getText().isEmpty() &&
                         !DimensionField.getText().isEmpty() &&
-                        !StatusField.getText().isEmpty() &&
+                        StatusField.getSelectedItem() != null &&
                         !ReceivedDateField.getText().isEmpty() &&
-                        !CollectedField.getText().isEmpty() &&
                         !CustomerSurnameField.getText().isEmpty()) {
                     succeeded = true;
                     dispose();
                 } else {
-                    JOptionPane.showMessageDialog(AddParcelForm.this, "Please enter both first name and last name.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(AddParcelForm.this, "Please enter fields.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -108,13 +112,13 @@ public class AddParcelForm extends JDialog {
 
         gbc.gridx = 0;
         gbc.gridy = 5;
-        contentPanel.add(new JLabel("Received Date:"), gbc);
+        contentPanel.add(new JLabel("Received Date (yyyy-MM-dd):"), gbc);
         gbc.gridx = 1;
         contentPanel.add(ReceivedDateField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 6;
-        contentPanel.add(new JLabel("Collected Date:"), gbc);
+        contentPanel.add(new JLabel("Collected Date (yyyy-MM-dd) optional*:"), gbc);
         gbc.gridx = 1;
         contentPanel.add(CollectedField, gbc);
 
@@ -140,28 +144,51 @@ public class AddParcelForm extends JDialog {
         return ParcelIDField.getText();
     }
 
-    public String getDaysInDeport() {
-        return DaysInDeportField.getText();
+    public int getDaysInDeport() {
+        try {
+            return Integer.parseInt(DaysInDeportField.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Invalid format for Days in Deport. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+            return -1;
+        }
     }
 
-    public String getWeight() {
-        return WeightField.getText();
+    public double getWeight() {
+        try {
+            return Double.parseDouble(WeightField.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Invalid format for Weight. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+            return -1.0;
+        }
     }
 
     public String getDimension() {
         return DimensionField.getText();
     }
 
-    public String getStatus() {
-        return StatusField.getText();
+    public ParcelStatus getStatus() {
+        return (ParcelStatus) StatusField.getSelectedItem();
     }
 
-    public String getReceivedDate() {
-        return ReceivedDateField.getText();
+    public LocalDate getReceivedDate() {
+        try {
+            return LocalDate.parse(ReceivedDateField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        } catch (DateTimeParseException e) {
+            JOptionPane.showMessageDialog(this, "Invalid date format for Received Date. Please use yyyy-MM-dd.", "Error", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
     }
 
-    public String getCollected() {
-        return CollectedField.getText();
+    public LocalDate getCollected() {
+        if (CollectedField.getText().isEmpty()) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(CollectedField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        } catch (DateTimeParseException e) {
+            JOptionPane.showMessageDialog(this, "Invalid date format for Collected Date. Please use yyyy-MM-dd.", "Error", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
     }
 
     public String getCustomerSurname() {

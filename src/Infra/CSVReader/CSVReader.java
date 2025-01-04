@@ -56,37 +56,58 @@ public class CSVReader {
         }
     }
 
-    public static void deleteRow(String filePath, int ID)
-    {
+    public static void deleteRow(String filePath, int ID) {
         File inputFile = new File(filePath);
-        File tempFile = new File("temp.csv");
+        File tempFile = new File("./src/DataFile/temp.csv");
 
-        try(BufferedReader br = new BufferedReader(new FileReader(inputFile));
-            BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))
-        )
-        {
+        // Ensure the temp file's directory exists
+        File tempDir = tempFile.getParentFile();
+        if (!tempDir.exists() && !tempDir.mkdirs()) {
+            System.err.println("Could not create directory for temporary file: " + tempDir);
+            return;
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile))) {
+
             String line;
-            while((line = br.readLine()) != null)
-            {
+            boolean rowDeleted = false;
+
+            while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                if(values.length > 0 && Integer.parseInt(values[0]) != ID)
-                {
-                    bw.write(line);
-                    bw.newLine();;
+                // Ensure we handle rows with invalid or missing ID columns
+                if (values.length > 0) {
+                    try {
+                        int rowID = Integer.parseInt(values[0]);
+                        if (rowID != ID) {
+                            bw.write(line);
+                            bw.newLine();
+                        } else {
+                            rowDeleted = true; // Mark that we deleted a row
+                        }
+                    } catch (NumberFormatException ex) {
+                        System.err.println("Skipping row with invalid ID: " + line);
+                    }
                 }
             }
+
+            if (!rowDeleted) {
+                System.out.println("No matching row found for ID: " + ID);
+            }
+
+        } catch (FileNotFoundException e) {
+            System.err.println("Input file not found: " + filePath);
+            return;
+        } catch (IOException e) {
+            System.err.println("Error processing file: " + e.getMessage());
+            return;
         }
-        catch (IOException e)
-        {
-            System.err.println("Error processing file: " +e.getMessage());
-        }
-        if (!inputFile.delete())
-        {
-            System.err.println("Could not delete original file");
-        }
-        if(!tempFile.renameTo(inputFile))
-        {
-            System.err.println("Could not rename temporary file");
+
+        // Replace original file with the updated temp file
+        if (!inputFile.delete()) {
+            System.err.println("Could not delete original file: " + inputFile.getAbsolutePath());
+        } else if (!tempFile.renameTo(inputFile)) {
+            System.err.println("Could not rename temp file to original file name: " + inputFile.getAbsolutePath());
         }
     }
 

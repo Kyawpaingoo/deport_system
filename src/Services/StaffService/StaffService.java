@@ -4,8 +4,10 @@ import Infra.Extension;
 import Infra.UnitOfWork.UnitOfWork;
 import Model.CollectedParcelModel;
 import Model.CustomerModel;
+import Model.Dtos.LoginDto;
 import Model.Dtos.ParcelStatus;
 import Model.Dtos.QueueOfCustomer;
+import Model.Dtos.UpdateStatusDto;
 import Model.ParcelModel;
 import Model.StaffModel;
 import Services.CustomerService.CustomerService;
@@ -36,9 +38,9 @@ public class StaffService implements IStaffService
     }
 
     @Override
-    public Boolean login(String userName, String password) {
-        Optional<StaffModel> staff = _uow._staffRepository().Search(s -> s.UserName.equals(userName));
-        if(staff.isPresent() && staff.get().getPassword().equals(password))
+    public Boolean login(LoginDto dto) {
+        Optional<StaffModel> staff = _uow._staffRepository().Search(s -> s.UserName.equals(dto.getUserName()));
+        if(staff.isPresent() && staff.get().getPassword().equals(dto.getPassword()))
         {
             loggedInStaff = staff.get();
             return true;
@@ -48,20 +50,20 @@ public class StaffService implements IStaffService
     }
 
     @Override
-    public Boolean logout(String userName, String password) {
+    public Boolean logout(LoginDto dto) {
         loggedInStaff = null;
         return true;
     }
 
     @Override
-    public ParcelModel updateParcelStatus(String ParcelID, ParcelStatus parcelStatus, double discount, double totalFee) {
+    public ParcelModel updateParcelStatus(UpdateStatusDto dto) {
         ParcelModel result = new ParcelModel();
-        Optional<ParcelModel> parcel = _iparcelService.getParcelDetail(ParcelID);
+        Optional<ParcelModel> parcel = _iparcelService.getParcelDetail(dto.getParcelId());
         if(parcel.isPresent())
         {
             ParcelModel parcelModel = parcel.get();
 
-            parcelModel.setParcelStatus(parcelStatus);
+            parcelModel.setParcelStatus(dto.getParcelStatus());
             parcelModel.setCollectedDate(now);
 
             long daysInDepot = java.time.Duration.between(
@@ -82,8 +84,8 @@ public class StaffService implements IStaffService
                     data.getReceivedDate(),
                     data.getCollectedDate(),
                     data.getCustomerSurname(),
-                    discount,
-                    totalFee
+                    dto.getDiscount(),
+                    dto.getTotalFee()
             );
 
             _uow._collectedParcelRepository().insert(collectedParcel);

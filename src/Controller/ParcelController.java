@@ -1,8 +1,12 @@
 package Controller;
 
+import Model.CollectedParcelModel;
 import Model.ParcelModel;
 import Services.ParcelService.IParcelService;
 import Services.ParcelService.ParcelService;
+
+import java.util.Map;
+import java.util.Optional;
 
 public class ParcelController {
     private final IParcelService _parcelService;
@@ -12,44 +16,44 @@ public class ParcelController {
         this._parcelService = new ParcelService();
     }
 
-    public void addParcel(ParcelModel obj)
+    public boolean addParcel(ParcelModel obj)
     {
-        _parcelService.addParcel(obj);
+        return _parcelService.addParcel(obj);
     }
 
-    public void getParcelDetail(String parcelID)
+    public Optional<ParcelModel> getParcelDetail(String parcelID)
     {
-        _parcelService.getParcelDetail(parcelID);
+        return _parcelService.getParcelDetail(parcelID);
     }
 
-    public void removeParcel(int ID)
+    public boolean removeParcel(int ID)
     {
-        _parcelService.removeParcel(ID);
+        return _parcelService.removeParcel(ID);
     }
 
-    public void getCollectedParcel()
+    public Map<Integer, CollectedParcelModel> getCollectedParcel()
     {
-        _parcelService.getCollectedParcel();
+        return  _parcelService.getCollectedParcel();
     }
 
-    public void getUncollectedParcel()
+    public Map<Integer, ParcelModel> getUncollectedParcel()
     {
-        _parcelService.getUncollectedParcel();
+        return _parcelService.getUncollectedParcel();
     }
 
-    public void searchParcel(String q)
+    public Optional<ParcelModel> searchParcel(String q)
     {
-        _parcelService.searchParcel(q);
+        return _parcelService.searchParcel(q);
     }
 
-    public void sortBySurname()
+    public Map<Integer, ParcelModel> sortBySurname()
     {
-        _parcelService.sortBySurname();
+        return _parcelService.sortBySurname();
     }
 
-    public void calculatedParcelFee(String dimensions, double weight, int days, double discount)
+    public double calculatedParcelFee(String dimensions, double weight, int days, double discount)
     {
-        _parcelService.calculateParcelFee(dimensions, weight, days, discount);
+        return _parcelService.calculateParcelFee(dimensions, weight, days, discount);
     }
 
 }

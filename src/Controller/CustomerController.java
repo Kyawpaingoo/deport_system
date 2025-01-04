@@ -4,6 +4,8 @@ import Model.CustomerModel;
 import Services.CustomerService.CustomerService;
 import Services.CustomerService.ICustomerService;
 
+import java.util.List;
+
 public class CustomerController {
     private final ICustomerService _customerService;
 
@@ -12,23 +14,23 @@ public class CustomerController {
         this._customerService = new CustomerService();
     }
 
-    public void getAll()
+    public List<CustomerModel> getAll()
     {
-        _customerService.getAll();
+        return  _customerService.getAll();
     }
 
-    public void addCustomer(CustomerModel obj)
+    public String addCustomer(CustomerModel obj)
     {
-        _customerService.addCustomer(obj);
+        return _customerService.addCustomer(obj);
     }
 
-    public void removeCustomer(int QueueNumber)
+    public String removeCustomer(int QueueNumber)
     {
-        _customerService.removeCustomer(QueueNumber);
+        return _customerService.removeCustomer(QueueNumber);
     }
 
-    public void getCurrentCustomer(int QueueNumber)
+    public String getCurrentCustomer(int QueueNumber)
     {
-        _customerService.getCurrentCustomer(QueueNumber);
+        return  _customerService.getCurrentCustomer(QueueNumber);
     }
 }

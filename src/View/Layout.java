@@ -1,5 +1,9 @@
 package View;
 
+import Controller.CustomerController;
+import Controller.ParcelController;
+import Controller.StaffController;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -12,8 +16,15 @@ public class Layout extends JFrame {
     private JButton customerQueueButton;
     private JButton reportsButton;
     private JButton logoutButton;
+    private CustomerController _customerController;
+    private ParcelController _parcelController;
+    private StaffController _staffController;
 
-    public Layout() {
+    public Layout(CustomerController customerController, ParcelController parcelController, StaffController staffController) {
+        this._customerController = customerController;
+        this._parcelController = parcelController;
+        this._staffController = staffController;
+
         setTitle("Deport Management System");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
@@ -30,8 +41,8 @@ public class Layout extends JFrame {
         reportsButton = new JButton("Reports");
         logoutButton = new JButton("Logout"); // Logout button
 
-        customerListButton.addActionListener(e -> showContent(new CustomerList()));
-        parcelListButton.addActionListener(e -> showContent(new ParcelTable()));
+        customerListButton.addActionListener(e -> showContent(new CustomerList(_customerController)));
+        parcelListButton.addActionListener(e -> showContent(new ParcelTable(_parcelController)));
         customerQueueButton.addActionListener(e -> showContent(new CustomerQueueList()));
         reportsButton.addActionListener(e -> showContent(new ReportTable()));
         logoutButton.addActionListener(e -> handleLogout());
@@ -44,7 +55,7 @@ public class Layout extends JFrame {
 
         contentPanel = new JPanel();
         contentPanel.setLayout(new BorderLayout());
-        contentPanel.add(new CustomerList(), BorderLayout.CENTER);
+        contentPanel.add(new CustomerList(_customerController), BorderLayout.CENTER);
 
         parentPanel.add(sidebar, BorderLayout.WEST);
         parentPanel.add(contentPanel, BorderLayout.CENTER);
