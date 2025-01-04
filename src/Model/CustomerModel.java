@@ -51,7 +51,7 @@ public class CustomerModel implements CSVParsable<CustomerModel> {
         this.SurName = surName;
     }
 
-    public Collection<?> getParcelID()
+    public String getParcelID()
     {
         return ParcelID;
     }

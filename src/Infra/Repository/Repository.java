@@ -7,13 +7,9 @@ import javax.swing.text.html.Option;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import  java.util.Comparator;
 
 public class Repository<T extends CSVParsable<T>> implements IRepository<T> {
     private final String filePath;
@@ -101,17 +97,21 @@ public class Repository<T extends CSVParsable<T>> implements IRepository<T> {
 
     @Override
     public Map<Integer, T> sortAsMap(Predicate<T> predicate) {
-        return getMap()
-                .entrySet()
+        // Ensure getMap() is not null
+        Map<Integer, T> sourceMap = getMap();
+        if (sourceMap == null) {
+            return Collections.emptyMap();
+        }
+
+        return sourceMap.entrySet()
                 .stream()
-                .filter(entry -> predicate.test(entry.getValue()))
-                .filter(entry -> entry.getValue() != null)
-                .sorted((Comparator<? super Map.Entry<Integer, T>>) Map.Entry.comparingByValue())
+                .filter(entry -> entry.getValue() != null && predicate.test(entry.getValue()))
+                .sorted()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
-                        (oldValue, newValue) -> oldValue,
-                        LinkedHashMap::new
+                        (oldValue, newValue) -> oldValue, // Resolving key conflicts
+                        LinkedHashMap::new // Maintain insertion order
                 ));
     }
 
