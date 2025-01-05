@@ -62,6 +62,17 @@ public class CustomerModel implements CSVParsable<CustomerModel> {
         this.ParcelID = parcelID;
     }
 
+    @Override
+    public String toString()
+    {
+        return  "{" +
+                "QueueNumber=" + QueueNumber + ',' +
+                "FirstName=" + FirstName + ',' +
+                "SurName=" + SurName + ',' +
+                "ParcelID=" + ParcelID +
+                '}';
+
+    }
 
     @Override
     public CustomerModel parseFromCSV(String[] values) {

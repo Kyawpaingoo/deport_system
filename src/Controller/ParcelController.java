@@ -5,6 +5,7 @@ import Model.ParcelModel;
 import Services.ParcelService.IParcelService;
 import Services.ParcelService.ParcelService;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -41,7 +42,7 @@ public class ParcelController {
         return _parcelService.getUncollectedParcel();
     }
 
-    public Optional<ParcelModel> searchParcel(String q)
+    public Map<Integer,ParcelModel> searchParcel(String q)
     {
         return _parcelService.searchParcel(q);
     }

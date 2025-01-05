@@ -1,37 +1,47 @@
 package Services.ParcelService;
 
+import Infra.Extension;
 import Infra.UnitOfWork.UnitOfWork;
+import Logger.Logger;
 import Model.CollectedParcelModel;
+import Model.CustomerModel;
 import Model.Dtos.ParcelStatus;
 import Model.ParcelModel;
 import Services.CustomerService.CustomerService;
 import Services.CustomerService.ICustomerService;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public class ParcelService implements IParcelService {
     private final UnitOfWork _uow;;
+    private final LocalDate now;
 
     public ParcelService()
     {
         this._uow = new UnitOfWork();
+        this.now = Extension.getLocalTime();
     }
 
     @Override
     public boolean addParcel(ParcelModel obj) {
+        obj.setReceivedDate(now);
         boolean result = _uow._parcelRepository().insert(obj);
+        Logger.getInstance().log("Parcel added: " + obj.toString());
         return  result;
     }
 
     @Override
     public Optional<ParcelModel> getParcelDetail(String parcelID) {
         Optional<ParcelModel> result = _uow._parcelRepository()
-                                        .Search(d -> Objects.equals(d.getParcelID(), parcelID));
-        return  result;
+                                        .FirstOrDefault(d -> Objects.equals(d.getParcelID(), parcelID));
+        return result;
     }
 
     @Override
     public boolean removeParcel(int ID) {
+        ParcelModel obj = _uow._parcelRepository().getById(ID).get();
+        Logger.getInstance().log("Parcel added: " + obj.toString());
         boolean result = _uow._parcelRepository().delete(ID);
         return result;
     }
@@ -51,11 +61,15 @@ public class ParcelService implements IParcelService {
     }
 
     @Override
-    public Optional<ParcelModel> searchParcel(String q) {
-        Optional<ParcelModel> result = _uow._parcelRepository()
-                                .Search(d -> Objects.equals(d.getCustomerSurname(), q) ||
-                                        Objects.equals(d.getParcelID(), q));
-        return result;
+    public Map<Integer,ParcelModel> searchParcel(String q) {
+        List<ParcelModel> result = _uow._parcelRepository()
+                .Search(d -> Objects.equals(d.getCustomerSurname(), q) ||
+                        Objects.equals(d.getParcelID(), q));
+        Map<Integer, ParcelModel> resultMap = new HashMap<>();
+        for (ParcelModel parcel : result) {
+            resultMap.put(parcel.getNo(), parcel);
+        }
+        return resultMap;
     }
 
     @Override

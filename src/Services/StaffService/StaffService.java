@@ -2,6 +2,7 @@ package Services.StaffService;
 
 import Infra.Extension;
 import Infra.UnitOfWork.UnitOfWork;
+import Logger.Logger;
 import Model.CollectedParcelModel;
 import Model.CustomerModel;
 import Model.Dtos.LoginDto;
@@ -41,10 +42,11 @@ public class StaffService implements IStaffService
 
     @Override
     public Boolean login(LoginDto dto) {
-        Optional<StaffModel> staff = _uow._staffRepository().Search(s -> s.UserName.equals(dto.getUserName()));
+        Optional<StaffModel> staff = _uow._staffRepository().FirstOrDefault(s -> s.UserName.equals(dto.getUserName()));
         if(staff.isPresent() && staff.get().getPassword().equals(dto.getPassword()))
         {
             loggedInStaff = staff.get();
+            Logger.getInstance().log("Staff login: " + loggedInStaff.toString());
             return true;
         }
 
@@ -53,6 +55,7 @@ public class StaffService implements IStaffService
 
     @Override
     public Boolean logout() {
+        Logger.getInstance().log("Staff logout: " + loggedInStaff.toString());
         loggedInStaff = null;
         return true;
     }
@@ -101,6 +104,7 @@ public class StaffService implements IStaffService
             if(data != null)
             {
                 result = data;
+                Logger.getInstance().log("Parcel Status Update: " + result.toString());
             }
         }
         return result;
@@ -111,6 +115,7 @@ public class StaffService implements IStaffService
     {
         obj.setReceivedDate(now);
         boolean result = _uow._parcelRepository().insert(obj);
+        Logger.getInstance().log("Parcel added: " + obj.toString());
         return result ? "Success" : "Fail";
     }
 
@@ -123,9 +128,7 @@ public class StaffService implements IStaffService
     @Override
     public List<CollectedParcelModel> getDailyCollectedList(LocalDate date) {
         List<CollectedParcelModel> resultList = new ArrayList<>();
-
         resultList = _uow._collectedParcelRepository().whereAsList(d -> d.getCollectedDate().equals(date));
-
 
         return resultList;
     }
@@ -133,16 +136,14 @@ public class StaffService implements IStaffService
     @Override
     public List<CustomerModel> getDailyCustomerList(LocalDate date) {
         List<CustomerModel> customerList = new ArrayList<>();
+        List<String> parcelIDList = _uow._collectedParcelRepository()
+                .whereAsList(d -> d.getCollectedDate().equals(date))
+                .stream().map(CollectedParcelModel::getParcelID)
+                .toList();
 
-            List<String> parcelIDList = _uow._collectedParcelRepository()
-                    .whereAsList(d -> d.getCollectedDate().equals(date))
-                    .stream().map(CollectedParcelModel::getParcelID)
-                    .toList();
-
-            customerList = _uow._customerRepository().getList().stream()
-                    .filter(customer -> parcelIDList.contains(customer.getParcelID()))
-                    .toList();
-
+        customerList = _uow._customerRepository().getList().stream()
+                .filter(customer -> parcelIDList.contains(customer.getParcelID()))
+                .toList();
 
         return customerList;
     }
@@ -150,12 +151,10 @@ public class StaffService implements IStaffService
     @Override
     public double getDailyCollectedFees(LocalDate date) {
         double totalFees = 0;
-
-            totalFees = _uow._collectedParcelRepository()
-                    .whereAsList(d -> d.getCollectedDate().equals(date))
-                    .stream().mapToDouble(CollectedParcelModel:: getTotalFee)
-                    .sum();
-
+        totalFees = _uow._collectedParcelRepository()
+                .whereAsList(d -> d.getCollectedDate().equals(date))
+                .stream().mapToDouble(CollectedParcelModel:: getTotalFee)
+                .sum();
 
         return totalFees;
     }

@@ -1,0 +1,11 @@
+2025-01-05 19:04:29 - Customer added: {QueueNumber=5792,FirstName=John,SurName=Cena,ParcelID=C1031}
+2025-01-05 19:06:52 - Customer added: {QueueNumber=8985,FirstName=The,SurName=Rock,ParcelID=C1034}
+2025-01-05 19:08:42 - Customer added: {QueueNumber=6536,FirstName=John,SurName=Cen,ParcelID=C1035}
+2025-01-05 19:08:45 - Customer remove: {QueueNumber=6536,FirstName=John,SurName=Cen,ParcelID=C1035}
+2025-01-05 19:45:55 - Staff login: {UserName=john_doe,Password=P@ssw0rd123,Role=Manager}
+2025-01-05 19:47:07 - Staff login: {UserName=john_doe,Password=P@ssw0rd123,Role=Manager}
+2025-01-05 19:51:05 - Staff login: {UserName=john_doe,Password=P@ssw0rd123,Role=Manager}
+2025-01-05 19:52:38 - Staff login: {UserName=john_doe,Password=P@ssw0rd123,Role=Manager}
+2025-01-05 19:54:26 - Staff login: {UserName=john_doe,Password=P@ssw0rd123,Role=Manager}
+2025-01-05 19:55:23 - Staff login: {UserName=john_doe,Password=P@ssw0rd123,Role=Manager}
+2025-01-05 19:57:51 - Staff login: {UserName=john_doe,Password=P@ssw0rd123,Role=Manager}

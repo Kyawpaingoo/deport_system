@@ -114,16 +114,16 @@ public class Repository<T extends CSVParsable<T>> implements IRepository<T> {
     }
 
     @Override
-    public Optional<T> Search(Predicate<T> predicate) {
+    public List<T> Search(Predicate<T> predicate) {
         if(isMapBased){
            return getMap().values()
                    .stream().filter(predicate)
-                   .findFirst();
+                   .collect(Collectors.toList());
         }
         else {
             return getList().stream()
                     .filter(predicate)
-                    .findFirst();
+                    .collect(Collectors.toList());
         }
     }
 
@@ -140,4 +140,16 @@ public class Repository<T extends CSVParsable<T>> implements IRepository<T> {
         }
     }
 
+    public Optional<T> FirstOrDefault(Predicate<T> predicate) {
+        if (isMapBased) {
+            return getMap().values()
+                    .stream()
+                    .filter(predicate)
+                    .findFirst();
+        } else {
+            return getList().stream()
+                    .filter(predicate)
+                    .findFirst();
+        }
+    }
 }

@@ -29,7 +29,7 @@ public class Layout extends JFrame {
 
         setTitle("Deport Management System");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLayout(new BorderLayout());
         parentPanel = new JPanel(new BorderLayout());
 

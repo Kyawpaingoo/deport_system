@@ -1,6 +1,7 @@
 package Services.CustomerService;
 
 import Infra.UnitOfWork.UnitOfWork;
+import Logger.Logger;
 import Model.CustomerModel;
 import Model.Dtos.QueueOfCustomer;
 
@@ -32,13 +33,16 @@ public class CustomerService implements ICustomerService{
     @Override
     public String addCustomer(CustomerModel obj) {
         boolean result = _uow._customerRepository().insert(obj);
+        Logger.getInstance().log("Customer added: " + obj.toString());
         return result ? "Success" : "Fail";
     }
 
     @Override
     public String removeCustomer(int QueueNumber) {
+        CustomerModel obj = _uow._customerRepository().getById(QueueNumber).get();
         boolean result = _uow._customerRepository().delete(QueueNumber);
-        System.out.println(QueueNumber);
+
+        Logger.getInstance().log("Customer remove: " + obj.toString());
         return result ? "Success" : "Fail";
     }
 

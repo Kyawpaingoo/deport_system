@@ -4,6 +4,7 @@ import Model.CollectedParcelModel;
 import Model.Dtos.ParcelStatus;
 import Model.ParcelModel;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -13,7 +14,7 @@ public interface IParcelService {
     boolean removeParcel(int ID);
     Map<Integer, CollectedParcelModel> getCollectedParcel();
     Map<Integer, ParcelModel> getUncollectedParcel();
-    Optional<ParcelModel> searchParcel(String q);
+    Map<Integer,ParcelModel> searchParcel(String q);
     Map<Integer, ParcelModel> sortBySurname();
     Double calculateParcelFee(String dimensions, double weight, int days, double discount);
 }

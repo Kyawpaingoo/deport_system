@@ -11,6 +11,7 @@ public interface IRepository<T> {
     List<T> whereAsList(Predicate<T> predicate);
     Map<Integer, T> whereAsMap(Predicate<T> predicate);
     Map<Integer, T> sortAsMap(Predicate<T> predicate);
-    Optional<T> Search(Predicate<T> predicate);
+    List<T> Search(Predicate<T> predicate);
     T update(T entity);
+    Optional<T> FirstOrDefault(Predicate<T> predicate);
 }
