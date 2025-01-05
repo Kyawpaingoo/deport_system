@@ -52,7 +52,7 @@ public class StaffModel implements CSVParsable<StaffModel> {
         return "{" +
                 "UserName=" + UserName + ',' +
                 "Password=" + Password + ',' +
-                "Role=" + Role + ',' +
+                "Role=" + Role +
                 '}';
     }
 

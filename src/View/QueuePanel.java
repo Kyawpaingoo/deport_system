@@ -1,33 +1,47 @@
 package View;
 
+import Controller.StaffController;
+import Model.CustomerModel;
+import Model.Dtos.QueueOfCustomer;
+import Model.SharedModel.QueueModel;
+import Services.QueueObserver;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.Observable;
+import java.util.Observer;
 
-public class QueuePanel extends JPanel {
+public class QueuePanel extends JPanel implements Observer {
     private JTable currentProcessingTable;
     private JTable upcomingQueueTable;
     private DefaultTableModel currentProcessingTableModel;
     private DefaultTableModel upcomingQueueTableModel;
+    private StaffController _staffController;
 
-    public QueuePanel() {
+    public QueuePanel(StaffController staffController) {
+        this._staffController = staffController;
         setLayout(new BorderLayout());
         initializeComponents();
         layoutComponents();
+        loadQueueData();
+
+        staffController.getQueueModel().addObserver(this);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        currentProcessingTableModel.setRowCount(0);
+        upcomingQueueTableModel.setRowCount(0);
+        loadQueueData();
     }
 
     private void initializeComponents() {
-        currentProcessingTableModel = new DefaultTableModel(new Object[]{"ID", "Name", "Status"}, 0);
-        upcomingQueueTableModel = new DefaultTableModel(new Object[]{"ID", "Name", "Status"}, 0);
+        currentProcessingTableModel = new DefaultTableModel(new Object[]{"Queue Number", "Surname", "Parcel ID"}, 0);
+        upcomingQueueTableModel = new DefaultTableModel(new Object[]{"Queue Number", "Surname", "Parcel ID"}, 0);
 
         currentProcessingTable = new JTable(currentProcessingTableModel);
         upcomingQueueTable = new JTable(upcomingQueueTableModel);
-
-        currentProcessingTableModel.addRow(new Object[]{"1", "John Doe", "Processing"});
-        currentProcessingTableModel.addRow(new Object[]{"2", "Jane Smith", "Processing"});
-
-        upcomingQueueTableModel.addRow(new Object[]{"3", "Alice Johnson", "Upcoming"});
-        upcomingQueueTableModel.addRow(new Object[]{"4", "Bob Brown", "Upcoming"});
     }
 
     private void layoutComponents() {
@@ -58,5 +72,25 @@ public class QueuePanel extends JPanel {
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
         add(upcomingQueuePanel, gbc);
+    }
+
+    private void loadQueueData()
+    {
+        QueueModel customerQueue = _staffController.getQueueModel();
+        int index = 0;
+        for (CustomerModel customer : customerQueue.getCustomerList()) {
+
+            if (index < 3) {
+                currentProcessingTableModel.addRow(new Object[]{customer.getQueueNumber(), customer.getSurName(), customer.getParcelID()});
+            } else {
+                upcomingQueueTableModel.addRow(new Object[]{customer.getQueueNumber(), customer.getSurName(), customer.getParcelID()});
+            }
+            index++;
+        }
+
+        currentProcessingTable.revalidate();
+        currentProcessingTable.repaint();
+        upcomingQueueTable.revalidate();
+        upcomingQueueTable.repaint();
     }
 }

@@ -1,6 +1,7 @@
 package View;
 
 import Controller.CustomerController;
+import Controller.StaffController;
 import Model.CustomerModel;
 import Infra.Extension;
 
@@ -24,9 +25,11 @@ public class CustomerList extends JPanel {
     private JButton deleteCustomerButton;
     private JButton addNewCustomerButton;
     private CustomerController _customerController;
+    private StaffController _staffController;
 
-    public CustomerList(CustomerController customerController) {
+    public CustomerList(CustomerController customerController, StaffController staffController) {
         this._customerController = customerController;
+        this._staffController = staffController;
         setLayout(new BorderLayout());
         initializeComponents();
         layoutComponents();
@@ -47,7 +50,6 @@ public class CustomerList extends JPanel {
         deleteCustomerButton = new JButton("Delete Customer");
         addNewCustomerButton = new JButton("Add New Customer");
 
-        // Listener for row selection to display details
         customerTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -55,7 +57,7 @@ public class CustomerList extends JPanel {
                     int selectedRow = customerTable.getSelectedRow();
                     if (selectedRow != -1) {
                         Object queueNumberObj = customerTable.getValueAt(selectedRow, 0);
-                        int queueNumber = parseQueueNumber(queueNumberObj); // Ensure type safety
+                        int queueNumber = parseQueueNumber(queueNumberObj);
 
                         String firstName = (String) customerTable.getValueAt(selectedRow, 1);
                         String lastName = (String) customerTable.getValueAt(selectedRow, 2);
@@ -68,7 +70,6 @@ public class CustomerList extends JPanel {
             }
         });
 
-        // Listener for delete button
         deleteCustomerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -77,9 +78,9 @@ public class CustomerList extends JPanel {
                     Object queueNumberObj = customerTable.getValueAt(selectedRow, 0);
                     int queueNumber = parseQueueNumber(queueNumberObj);
 
-                    if (queueNumber != -1) { // Ensure valid queueNumber
-                        _customerController.removeCustomer(queueNumber); // Remove from controller
-                        tableModel.removeRow(selectedRow); // Remove from table
+                    if (queueNumber != -1) {
+                        _customerController.removeCustomer(queueNumber);
+                        tableModel.removeRow(selectedRow);
                     } else {
                         JOptionPane.showMessageDialog(null, "Invalid Queue Number. Unable to delete customer.");
                     }
@@ -89,11 +90,35 @@ public class CustomerList extends JPanel {
             }
         });
 
-        // Listener for add button
         addNewCustomerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showAddNewCustomerDialog();
+            }
+        });
+
+        addToQueueButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = customerTable.getSelectedRow();
+                if (selectedRow != -1) {
+                    Object queueNumberObj = customerTable.getValueAt(selectedRow, 0);
+                    int queueNumber = parseQueueNumber(queueNumberObj);
+
+                    if (queueNumber != -1) {
+                        CustomerModel customer = _customerController.getByQueueNumber(queueNumber);
+                        if (customer != null) {
+                            _staffController.addCustomerToQueue(customer);
+                            JOptionPane.showMessageDialog(null, "Customer added to queue successfully.");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Customer not found.");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Invalid Queue Number.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "No customer selected.");
+                }
             }
         });
     }
@@ -109,7 +134,7 @@ public class CustomerList extends JPanel {
             int queueNumber = generateNumber();
             CustomerModel newCustomer = new CustomerModel(queueNumber, firstName, lastName, parcelID);
             _customerController.addCustomer(newCustomer);
-            tableModel.addRow(new Object[]{firstName, lastName, parcelID});
+            tableModel.addRow(new Object[]{queueNumber, firstName, lastName, parcelID});
         }
     }
 

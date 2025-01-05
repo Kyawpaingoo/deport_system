@@ -21,9 +21,9 @@ public class ParcelController {
         return _parcelService.addParcel(obj);
     }
 
-    public Optional<ParcelModel> getParcelDetail(String parcelID)
+    public ParcelModel getParcelDetail(String parcelID)
     {
-        return _parcelService.getParcelDetail(parcelID);
+        return _parcelService.getParcelDetail(parcelID).get();
     }
 
     public boolean removeParcel(int ID)

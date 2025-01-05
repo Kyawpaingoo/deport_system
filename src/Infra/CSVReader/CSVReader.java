@@ -135,7 +135,7 @@ public class CSVReader {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                if (values[0].equals(updatedEntity.getId())) {
+                if (String.valueOf(updatedEntity.getId()).equals(values[0])) {
                     list.add(updatedEntity);
                     found = true;
                 } else {
@@ -146,8 +146,7 @@ public class CSVReader {
             e.printStackTrace();
         }
 
-        if (found) {
-            writeListToCSV(filePath, list, false);
-        }
+        writeListToCSV(filePath, list, false);
+
     }
 }

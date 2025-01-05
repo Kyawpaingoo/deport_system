@@ -147,7 +147,7 @@ public class CollectedParcelModel implements CSVParsable<CollectedParcelModel> {
         this.TotalFee = totalFee;
     }
 
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
     public String toString() {

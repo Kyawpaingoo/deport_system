@@ -1,6 +1,7 @@
 package Model;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public class CustomerModel implements CSVParsable<CustomerModel> {
     private int QueueNumber;
@@ -61,17 +62,6 @@ public class CustomerModel implements CSVParsable<CustomerModel> {
         this.ParcelID = parcelID;
     }
 
-//    @Override
-//    public String toString()
-//    {
-//        return  "{" +
-//                "QueueNumber=" + QueueNumber + ',' +
-//                "FirstName=" + FirstName + ',' +
-//                "SurName=" + SurName + ',' +
-//                "ParcelID=" + ParcelID + ',' +
-//                '}';
-//
-//    }
 
     @Override
     public CustomerModel parseFromCSV(String[] values) {
@@ -95,5 +85,21 @@ public class CustomerModel implements CSVParsable<CustomerModel> {
                 FirstName,
                 SurName,
                 ParcelID};
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CustomerModel that = (CustomerModel) o;
+        return QueueNumber == that.QueueNumber &&
+                Objects.equals(FirstName, that.FirstName) &&
+                Objects.equals(SurName, that.SurName) &&
+                Objects.equals(ParcelID, that.ParcelID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(QueueNumber, FirstName, SurName, ParcelID);
     }
 }

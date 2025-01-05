@@ -1,7 +1,14 @@
 package View;
 
+import Controller.StaffController;
+import Model.CollectedParcelModel;
+import Model.CustomerModel;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.time.LocalDate;
+import java.util.List;
 
 public class ReportTable extends JPanel {
     private JTabbedPane reportTabBar;
@@ -9,32 +16,24 @@ public class ReportTable extends JPanel {
     private JPanel parcelPanel;
     private JTable customerTable;
     private JTable parcelTable;
+    private StaffController _staffController;
 
-    public ReportTable() {
+    public ReportTable(StaffController staffController) {
+        this._staffController = staffController;
         setLayout(new BorderLayout());
         initializeComponents();
         layoutComponents();
+        loadReportData();
     }
 
     private void initializeComponents() {
         reportTabBar = new JTabbedPane();
 
-        String[] columnNames = {"Date", "Total Parcels", "Total Revenue", "Status"};
+        String[] customerColumnNames = {"Customer ID", "Queue Number", "Status"};
+        String[] parcelColumnNames = {"Date", "Parcel ID", "Status", "Fee"};
 
-        Object[][] customerData = {
-                {"2025-01-04", "15", "$150.00", "Completed"},
-                {"2025-01-03", "12", "$120.00", "Completed"},
-                {"2025-01-02", "18", "$180.00", "Completed"}
-        };
-
-        Object[][] parcelData = {
-                {"Week 1 Jan", "105", "$1,050.00", "Completed"},
-                {"Week 4 Dec", "95", "$950.00", "Completed"},
-                {"Week 3 Dec", "88", "$880.00", "Completed"}
-        };
-
-        customerTable = new JTable(customerData, columnNames);
-        parcelTable = new JTable(parcelData, columnNames);
+        customerTable = new JTable(new DefaultTableModel(customerColumnNames, 0));
+        parcelTable = new JTable(new DefaultTableModel(parcelColumnNames, 0));
 
         configureTable(customerTable);
         configureTable(parcelTable);
@@ -66,6 +65,38 @@ public class ReportTable extends JPanel {
         add(reportTabBar, BorderLayout.CENTER);
 
         setPreferredSize(new Dimension(800, 500));
+    }
+
+    private void loadReportData() {
+        java.util.List<CustomerModel> dailyCustomerData = _staffController.getDailyCustomerList(LocalDate.now());
+        List<CollectedParcelModel> dailyParcelData = _staffController.getDailyCollectedParcelList(LocalDate.now());
+
+        updateTableData(customerTable, dailyCustomerData);
+        updateTableData(parcelTable, dailyParcelData);
+    }
+
+    private void updateTableData(JTable table, List<?> data) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+
+        for (Object row : data) {
+            if (row instanceof CustomerModel) {
+                CustomerModel customer = (CustomerModel) row;
+                model.addRow(new Object[]{
+                        customer.getParcelID(),
+                        "$" + customer.getQueueNumber(),
+                        "Completed"
+                });
+            } else if (row instanceof CollectedParcelModel) {
+                CollectedParcelModel parcel = (CollectedParcelModel) row;
+                model.addRow(new Object[]{
+                        LocalDate.now().toString(),
+                        parcel.getParcelID(),
+                        parcel.getParcelStatus(),
+                        "$" + parcel.getTotalFee(),
+                });
+            }
+        }
     }
 }
 

@@ -20,21 +20,18 @@ public class CustomerService implements ICustomerService{
     public List<CustomerModel> getAll() {
 
         List<CustomerModel> customerList = _uow._customerRepository().getList();
-       // System.out.println(queueList.CustomerList);
         return customerList;
     }
 
     @Override
     public Optional<CustomerModel> getByQueue(int Id) {
         Optional<CustomerModel> result = _uow._customerRepository().getById(Id);
-//        System.out.println(result);
         return result;
     }
 
     @Override
     public String addCustomer(CustomerModel obj) {
         boolean result = _uow._customerRepository().insert(obj);
-//        System.out.println(result);
         return result ? "Success" : "Fail";
     }
 

@@ -1,5 +1,8 @@
 package View;
 
+import Controller.StaffController;
+import Model.Dtos.LoginDto;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,10 +15,12 @@ public class LoginForm extends JDialog {
     private JButton cancelButton;
     private JPanel contentPanel;
     private boolean succeeded;
+    private StaffController _staffController;
 
-    public LoginForm(Frame parent) {
+    public LoginForm(Frame parent, StaffController staffController) {
         super(parent, "Login", true);
 
+        this._staffController = staffController;
         contentPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
@@ -74,7 +79,8 @@ public class LoginForm extends JDialog {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
 
-        if ("admin".equals(username) && "password".equals(password)) {
+        LoginDto loginDto = new LoginDto(username, password);
+        if (_staffController.login(loginDto)) {
             JOptionPane.showMessageDialog(this, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
             succeeded = true;
             dispose();

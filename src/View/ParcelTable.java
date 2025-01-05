@@ -77,9 +77,9 @@ public class ParcelTable extends JPanel{
                 if (selectedRow != -1) {
                     int parcelNumber = (int) parcelTable.getValueAt(selectedRow, 0);
 
-                    if (parcelNumber != -1) { // Ensure valid queueNumber
-                        _parcelController.removeParcel(parcelNumber); // Remove from controller
-                        tableModel.removeRow(selectedRow); // Remove from table
+                    if (parcelNumber != -1) {
+                        _parcelController.removeParcel(parcelNumber);
+                        tableModel.removeRow(selectedRow);
                     } else {
                         JOptionPane.showMessageDialog(null, "Invalid Queue Number. Unable to delete customer.");
                     }
@@ -190,16 +190,4 @@ public class ParcelTable extends JPanel{
         }
     }
 
-//    private int parseNumber(Object queueNumberObj) {
-//        if (queueNumberObj instanceof Integer) {
-//            return (int) queueNumberObj;
-//        } else if (queueNumberObj instanceof String) {
-//            try {
-//                return Integer.parseInt((String) queueNumberObj);
-//            } catch (NumberFormatException ex) {
-//                System.err.println("Invalid Queue Number format: " + queueNumberObj);
-//            }
-//        }
-//        return -1;
-//    }
 }

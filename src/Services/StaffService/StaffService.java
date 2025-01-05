@@ -9,13 +9,17 @@ import Model.Dtos.ParcelStatus;
 import Model.Dtos.QueueOfCustomer;
 import Model.Dtos.UpdateStatusDto;
 import Model.ParcelModel;
+import Model.SharedModel.QueueModel;
 import Model.StaffModel;
 import Services.CustomerService.CustomerService;
 import Services.CustomerService.ICustomerService;
 import Services.ParcelService.IParcelService;
 import Services.ParcelService.ParcelService;
-
+import Services.QueueObserver;
+import View.CustomerQueueList;
+import Services.QueueObserver;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,7 +28,6 @@ public class StaffService implements IStaffService
     private final UnitOfWork _uow;
     private final IParcelService _iparcelService;
     private final ICustomerService _iCustomerService;
-    private final  QueueOfCustomer queueList;
     private final LocalDate now;
     private StaffModel loggedInStaff = null;
 
@@ -33,7 +36,6 @@ public class StaffService implements IStaffService
         this._uow = new UnitOfWork();
         this._iparcelService = new ParcelService();
         this._iCustomerService = new CustomerService();
-        this.queueList = new QueueOfCustomer();
         this.now = Extension.getLocalTime();
     }
 
@@ -50,9 +52,15 @@ public class StaffService implements IStaffService
     }
 
     @Override
-    public Boolean logout(LoginDto dto) {
+    public Boolean logout() {
         loggedInStaff = null;
         return true;
+    }
+
+    @Override
+    public StaffModel getLoggedInStaff() {
+        System.out.println(loggedInStaff);
+        return loggedInStaff;
     }
 
     @Override
@@ -113,33 +121,19 @@ public class StaffService implements IStaffService
     }
 
     @Override
-    public QueueOfCustomer addCustomerToQueue(CustomerModel data) {
-        queueList.getCustomerList().add(data);
-        return  queueList;
-    }
-
-    @Override
-    public QueueOfCustomer removeCustomerFromQueue(int queueNumber) {
-        queueList.CustomerList.removeIf(d -> d.getQueueNumber() == queueNumber);
-        return queueList;
-    }
-
-    @Override
     public List<CollectedParcelModel> getDailyCollectedList(LocalDate date) {
         List<CollectedParcelModel> resultList = new ArrayList<>();
-        if(loggedInStaff != null)
-        {
-            resultList = _uow._collectedParcelRepository().whereAsList(d -> d.getCollectedDate().equals(date));
-        }
 
-        return  resultList;
+        resultList = _uow._collectedParcelRepository().whereAsList(d -> d.getCollectedDate().equals(date));
+
+
+        return resultList;
     }
 
     @Override
     public List<CustomerModel> getDailyCustomerList(LocalDate date) {
         List<CustomerModel> customerList = new ArrayList<>();
-        if(loggedInStaff != null)
-        {
+
             List<String> parcelIDList = _uow._collectedParcelRepository()
                     .whereAsList(d -> d.getCollectedDate().equals(date))
                     .stream().map(CollectedParcelModel::getParcelID)
@@ -148,7 +142,7 @@ public class StaffService implements IStaffService
             customerList = _uow._customerRepository().getList().stream()
                     .filter(customer -> parcelIDList.contains(customer.getParcelID()))
                     .toList();
-        }
+
 
         return customerList;
     }
@@ -156,14 +150,13 @@ public class StaffService implements IStaffService
     @Override
     public double getDailyCollectedFees(LocalDate date) {
         double totalFees = 0;
-        if(loggedInStaff != null)
-        {
+
             totalFees = _uow._collectedParcelRepository()
                     .whereAsList(d -> d.getCollectedDate().equals(date))
                     .stream().mapToDouble(CollectedParcelModel:: getTotalFee)
                     .sum();
-        }
 
-        return  totalFees;
+
+        return totalFees;
     }
 }

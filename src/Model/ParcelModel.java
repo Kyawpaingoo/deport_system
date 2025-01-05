@@ -128,20 +128,6 @@ public class ParcelModel implements CSVParsable<ParcelModel> {
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    @Override
-    public String toString() {
-        return String.format(String.format("{" +
-                "No=" + No + "," +
-                "ParcelID=" + ParcelID + ',' +
-                "DaysInDepot=" + DaysInDepot + ',' +
-                "Weight=" + Weight + ',' +
-                "Dimensions=" + Dimensions + ',' +
-                "ParcelStatus=" + ParcelStatus + ',' +
-                "ReceivedDate=" + DATE_FORMAT.format(ReceivedDate)  + ',' +
-                "CollectedDate=" +  (CollectedDate != null ? DATE_FORMAT.format(CollectedDate) : "N/A") + ',' +
-                "CustomerSurname='" + CustomerSurname + ',' +
-                '}'));
-    }
 
     @Override
     public ParcelModel parseFromCSV(String[] values) {
@@ -180,6 +166,21 @@ public class ParcelModel implements CSVParsable<ParcelModel> {
                 CollectedDate != null ? DATE_FORMAT.format(CollectedDate) : "NULL",
                 CustomerSurname
         };
+    }
+
+    @Override
+    public String toString() {
+        return String.format("{" +
+                "No=" + No + "," +
+                "ParcelID=" + ParcelID + ',' +
+                "DaysInDepot=" + DaysInDepot + ',' +
+                "Weight=" + Weight + ',' +
+                "Dimensions=" + Dimensions + ',' +
+                "ParcelStatus=" + ParcelStatus + ',' +
+                "ReceivedDate=" + DATE_FORMAT.format(ReceivedDate)  + ',' +
+                "CollectedDate=" +  (CollectedDate != null ? DATE_FORMAT.format(CollectedDate) : "N/A") + ',' +
+                "CustomerSurname=" + CustomerSurname +
+                '}');
     }
 }
 

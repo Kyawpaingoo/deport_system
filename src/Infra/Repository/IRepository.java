@@ -13,5 +13,4 @@ public interface IRepository<T> {
     Map<Integer, T> sortAsMap(Predicate<T> predicate);
     Optional<T> Search(Predicate<T> predicate);
     T update(T entity);
-   // Optional<T> where(Predicate<T> predicate);
 }
