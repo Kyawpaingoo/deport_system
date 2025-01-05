@@ -41,7 +41,7 @@ public class Layout extends JFrame {
         parcelListButton = new JButton("Parcel List");
         customerQueueButton = new JButton("Customer Queue");
         reportsButton = new JButton("Reports");
-        logoutButton = new JButton("Logout"); // Logout button
+        logoutButton = new JButton("Logout");
 
         customerListButton.addActionListener(e -> showContent(new CustomerList(_customerController, _staffController)));
         parcelListButton.addActionListener(e -> showContent(new ParcelTable(_parcelController)));
