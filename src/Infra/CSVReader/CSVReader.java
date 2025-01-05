@@ -31,11 +31,11 @@ public class CSVReader {
     public static  <T extends CSVParsable<T>> Map<Integer, T> getMap(String filePath, T entity) {
         Map<Integer, T> map = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line = br.readLine(); // Skip header
+            String line = br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
                 T obj = entity.parseFromCSV(values);
-                map.put(obj.getId(), obj); // Assuming `getId` method exists in T
+                map.put(obj.getId(), obj);
             }
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
@@ -60,7 +60,6 @@ public class CSVReader {
         File inputFile = new File(filePath);
         File tempFile = new File("./src/DataFile/temp.csv");
 
-        // Ensure the temp file's directory exists
         File tempDir = tempFile.getParentFile();
         if (!tempDir.exists() && !tempDir.mkdirs()) {
             System.err.println("Could not create directory for temporary file: " + tempDir);
@@ -75,7 +74,7 @@ public class CSVReader {
 
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                // Ensure we handle rows with invalid or missing ID columns
+
                 if (values.length > 0) {
                     try {
                         int rowID = Integer.parseInt(values[0]);
@@ -83,7 +82,7 @@ public class CSVReader {
                             bw.write(line);
                             bw.newLine();
                         } else {
-                            rowDeleted = true; // Mark that we deleted a row
+                            rowDeleted = true;
                         }
                     } catch (NumberFormatException ex) {
                         System.err.println("Skipping row with invalid ID: " + line);
@@ -103,7 +102,6 @@ public class CSVReader {
             return;
         }
 
-        // Replace original file with the updated temp file
         if (!inputFile.delete()) {
             System.err.println("Could not delete original file: " + inputFile.getAbsolutePath());
         } else if (!tempFile.renameTo(inputFile)) {

@@ -16,6 +16,7 @@ public class ReportTable extends JPanel {
     private JPanel parcelPanel;
     private JTable customerTable;
     private JTable parcelTable;
+    private JTextField totalFeeField;
     private StaffController _staffController;
 
     public ReportTable(StaffController staffController) {
@@ -43,6 +44,11 @@ public class ReportTable extends JPanel {
 
         customerPanel.add(new JScrollPane(customerTable), BorderLayout.CENTER);
         parcelPanel.add(new JScrollPane(parcelTable), BorderLayout.CENTER);
+
+        totalFeeField = new JTextField();
+        totalFeeField.setEditable(false);
+        totalFeeField.setHorizontalAlignment(JTextField.RIGHT);
+        parcelPanel.add(totalFeeField, BorderLayout.SOUTH);
     }
 
     private void configureTable(JTable table) {
@@ -57,8 +63,10 @@ public class ReportTable extends JPanel {
         JScrollPane customerScrollPane = new JScrollPane(customerTable);
         JScrollPane parcelScrollPane = new JScrollPane(parcelTable);
 
+        parcelPanel.add(parcelScrollPane, BorderLayout.CENTER);
+
         reportTabBar.addTab("Daily Customer Report", customerScrollPane);
-        reportTabBar.addTab("Daily Collected Parcel Report", parcelScrollPane);
+        reportTabBar.addTab("Daily Collected Parcel Report", parcelPanel);
 
         reportTabBar.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -73,6 +81,9 @@ public class ReportTable extends JPanel {
 
         updateTableData(customerTable, dailyCustomerData);
         updateTableData(parcelTable, dailyParcelData);
+
+        double totalFee = _staffController.getDailyCollectedFees(LocalDate.now());
+        totalFeeField.setText("Total Fee: $" + totalFee);
     }
 
     private void updateTableData(JTable table, List<?> data) {
@@ -97,6 +108,8 @@ public class ReportTable extends JPanel {
                 });
             }
         }
+
+
     }
 }
 
